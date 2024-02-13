@@ -59,9 +59,17 @@ void ssd1306_Reset(void) {
 void ssd1306_WriteCommand(uint8_t byte) {
     //HAL_I2C_Mem_Write(&SSD1306_I2C_PORT, SSD1306_I2C_ADDR, 0x00, 1, &byte, 1, HAL_MAX_DELAY); //original code
     uint8_t tx_data[2] = {0x00, byte};
-    uint32_t err_code = nrf_drv_twi_tx(&m_twi, SSD1306_I2C_ADDR, tx_data, 2, false);
-    NRF_LOG_INFO("write cmd err code is 0x%X\r\n", err_code);
+    m_xfer_done = false;
+    uint32_t err_code = nrf_drv_twi_tx(&SSD1306_I2C_PORT, SSD1306_I2C_ADDR, tx_data, 2, false);
+    // NRF_LOG_INFO("write cmd 0x%X err code is 0x%X\r\n", byte, err_code);
+    // NRF_LOG_FLUSH();
     APP_ERROR_CHECK(err_code);
+    while(m_xfer_done == false){
+        // NRF_LOG_DEBUG("waitWR\r\n");
+        // NRF_LOG_FLUSH();
+        sleep(10);
+    }
+    sleep(10);
 }
 
 // Send data
@@ -70,9 +78,15 @@ void ssd1306_WriteData(uint8_t* buffer, size_t buff_size) {
     uint8_t tx_data[buff_size+1];
     tx_data[0] = 0x40;
     memcpy(&tx_data+1, buffer, buff_size);
-    uint32_t err_code = nrf_drv_twi_tx(&m_twi, SSD1306_I2C_ADDR, tx_data, sizeof(tx_data), false);
-    NRF_LOG_INFO("write data err code is 0x%X\r\n", err_code);
+    m_xfer_done = false;
+    uint32_t err_code = nrf_drv_twi_tx(&SSD1306_I2C_PORT, SSD1306_I2C_ADDR, tx_data, sizeof(tx_data), false);
+    // NRF_LOG_INFO("write data err code is 0x%X\r\n", err_code);
+    // NRF_LOG_FLUSH();
     APP_ERROR_CHECK(err_code);
+    while(m_xfer_done == false){
+        sleep(10);
+    }
+    sleep(10);
 }
 
 #else
@@ -98,12 +112,16 @@ SSD1306_Error_t ssd1306_FillBuffer(uint8_t* buf, uint32_t len) {
 
 // Initialize the oled screen
 void ssd1306_Init(void) {
+    SSD1306 = (SSD1306_t) {
+         0, 0, 0, 0
+    };
+
     // Reset OLED
     ssd1306_Reset();
 
     // Wait for the screen to boot
     //HAL_Delay(100);
-    sleep(1000);
+    sleep(100);
 
     // Init OLED
     ssd1306_SetDisplayOn(0); //display off
@@ -188,7 +206,7 @@ void ssd1306_Init(void) {
 
     // Clear screen
     ssd1306_Fill(Black);
-    
+
     // Flush buffer to screen
     ssd1306_UpdateScreen();
     
@@ -197,6 +215,7 @@ void ssd1306_Init(void) {
     SSD1306.CurrentY = 0;
     
     SSD1306.Initialized = 1;
+
 }
 
 // Fill the whole screen with the given color
@@ -222,6 +241,7 @@ void ssd1306_UpdateScreen(void) {
         ssd1306_WriteCommand(0x00);
         ssd1306_WriteCommand(0x10);
         ssd1306_WriteData(&SSD1306_Buffer[SSD1306_WIDTH*i],SSD1306_WIDTH);
+        sleep(10);
     }
 }
 

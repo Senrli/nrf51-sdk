@@ -26,7 +26,7 @@
 //#define SSD1306_USE_SPI
 
 // I2C Configuration
-// #define SSD1306_I2C_PORT        m_twi                       //edited for nrf51, default name for i2c0
+#define SSD1306_I2C_PORT        m_twi                       //edited for nrf51, default name for i2c0
 #define SSD1306_I2C_ADDR        0x3C
 
 // SPI Configuration
