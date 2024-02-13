@@ -78,8 +78,8 @@ extern "C" {
 
 #define BSP_BUTTON_0   BUTTON_0
 
-#define USART0_RX_PIN_NUMBER  9
-#define USART0_TX_PIN_NUMBER  11
+#define USART0_RX_PIN_NUMBER  11
+#define USART0_TX_PIN_NUMBER  9
 #define USART0_CTS_PIN_NUMBER 8
 #define USART0_RTS_PIN_NUMBER 10
 #define USART0_HWFC           true
@@ -111,4 +111,4 @@ extern "C" {
 }
 #endif
 
-#endif // ARDUINO_PRIMO_H
+#endif // BLE400_H
