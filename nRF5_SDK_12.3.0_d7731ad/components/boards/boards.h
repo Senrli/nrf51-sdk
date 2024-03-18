@@ -74,6 +74,8 @@
   #include "arduino_primo.h"
 #elif defined (BOARD_BLE400)
   #include "BLE400.h"
+#elif defined (BOARD_CURB_SENSOR)
+  #include "curb_sensor.h"
 #elif defined(BOARD_CUSTOM)
   #include "custom_board.h"
 #else
