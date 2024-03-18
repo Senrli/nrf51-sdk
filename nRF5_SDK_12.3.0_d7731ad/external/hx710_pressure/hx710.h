@@ -11,9 +11,6 @@
 #ifndef _HX710_H_
 #define _HX710_H_
 
-#include "nrf_gpio.h"
-#include "nrf_delay.h"
-
 #define HX710_10_HZ_TICKS 24
 #define HX710_40_HZ_TICKS 26
 #define HX710_BITS 24

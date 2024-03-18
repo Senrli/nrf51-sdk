@@ -10,7 +10,8 @@
  */
 
 #include "hx710.h"
-
+#include "nrf_gpio.h"
+#include "nrf_delay.h"
 
 void hx710_init(hx710_t* sensor) {
     nrf_gpio_cfg_output(sensor->sck);
