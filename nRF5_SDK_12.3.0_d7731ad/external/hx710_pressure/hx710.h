@@ -17,6 +17,10 @@
 
 #define HX710_ACCU HX710_40_HZ_TICKS
 
+#define TIMEOUT_MS 2000                     /* HX710 read timeout in ms */
+
+#include "nrf.h"
+
 // volatile long hx710_buf = 0;
 // volatile long weight_gross = 0;
 // volatile long weight_actual = 0;
@@ -39,6 +43,6 @@ unsigned int get_weight(hx710_t * sensor);
 
 /// @brief Read data from HX710 sensor
 /// @return Raw reading from HX710 sensor
-unsigned long hx710_read(hx710_t * sensor);
+long hx710_read(hx710_t * sensor);
 
 #endif /* _HX710_H_ */
