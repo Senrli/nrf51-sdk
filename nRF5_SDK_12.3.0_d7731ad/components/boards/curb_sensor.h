@@ -45,13 +45,13 @@ extern "C" {
 #endif
 
 // LEDs definitions
-#define LEDS_NUMBER    5
+#define LEDS_NUMBER    2
 
 #define LED_0          18
 #define LED_1          17
 
 /* Flips the active state being logic high or logic low */
-#define LEDS_ACTIVE_STATE 1
+#define LEDS_ACTIVE_STATE 0
 
 #define LEDS_LIST {LED_0, LED_1}
 
@@ -80,7 +80,7 @@ extern "C" {
 #define USART0_TX_PIN_NUMBER  22
 #define USART0_CTS_PIN_NUMBER 23
 #define USART0_RTS_PIN_NUMBER 24
-#define USART0_HWFC           true
+#define USART0_HWFC           APP_UART_FLOW_CONTROL_DISABLED
 
 // #define USART1_RX_PIN_NUMBER  5
 // #define USART1_TX_PIN_NUMBER  6
