@@ -79,6 +79,10 @@
 extern "C" {
 #endif
 
+#define APP_TIMER_OVERFLOW_COUNTER          NRF_TIMER1          /* Overflow timer for system tick counter */
+#define APP_TIMER_PPI_CHANNEL_OVERFLOW      0                   /* PPI channel setup for overflow events */
+
+
 #define APP_TIMER_CLOCK_FREQ         32768                      /**< Clock frequency of the RTC timer used to implement the app timer module. */
 #define APP_TIMER_MIN_TIMEOUT_TICKS  5                          /**< Minimum value of the timeout_ticks parameter of app_timer_start(). */
 
@@ -289,6 +293,16 @@ uint32_t app_timer_stop_all(void);
  * @return    Current value of the RTC1 counter.
  */
 uint32_t app_timer_cnt_get(void);
+
+/**@brief Return the number of times the timer has overflowed and the current counter value
+ *
+ * @param[out] p_overflow  Number of times the RTC counter has overflowed
+ * @param[out] p_ticks     Current value of RTC counter
+ * 
+ * @note Adapted from https://devzone.nordicsemi.com/f/nordic-q-a/29013/best-way-to-implement-system-clock-on-nrf51 and
+ *       https://gist.github.com/clemtaylor/26da578862ffe083bf72
+ */
+void app_timer_ticks(uint32_t *p_overflow, uint32_t *p_ticks);
 
 /**@brief Function for computing the difference between two RTC1 counter values.
  *

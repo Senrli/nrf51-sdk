@@ -923,6 +923,35 @@ void SWI_IRQHandler(void)
     timer_list_handler();
 }
 
+/**
+ * Internal function to enable overflow counter 
+ * for system clock tick events.
+ * 
+ * Adapted from https://devzone.nordicsemi.com/f/nordic-q-a/29013/best-way-to-implement-system-clock-on-nrf51 and
+ * https://gist.github.com/clemtaylor/26da578862ffe083bf72
+ * 
+ * 
+*/
+static void overflow_init(void)
+{
+    APP_TIMER_OVERFLOW_COUNTER->POWER          = 1;
+    APP_TIMER_OVERFLOW_COUNTER->TASKS_SHUTDOWN = 1;
+    APP_TIMER_OVERFLOW_COUNTER->TASKS_CLEAR    = 1;
+    APP_TIMER_OVERFLOW_COUNTER->INTENCLR       = -1; // disable all
+    APP_TIMER_OVERFLOW_COUNTER->MODE           = TIMER_MODE_MODE_Counter;
+    APP_TIMER_OVERFLOW_COUNTER->BITMODE        = TIMER_BITMODE_BITMODE_32Bit << TIMER_BITMODE_BITMODE_Pos;
+    APP_TIMER_OVERFLOW_COUNTER->PRESCALER      = 0;
+    APP_TIMER_OVERFLOW_COUNTER->SHORTS         = 0;
+
+    sd_ppi_channel_assign(APP_TIMER_PPI_CHANNEL_OVERFLOW,
+        &NRF_RTC1->EVENTS_OVRFLW,
+        &APP_TIMER_OVERFLOW_COUNTER->TASKS_COUNT);
+
+    sd_ppi_channel_enable_set(1 << APP_TIMER_PPI_CHANNEL_OVERFLOW);
+
+    APP_TIMER_OVERFLOW_COUNTER->TASKS_START = 1;
+}
+
 
 uint32_t app_timer_init(uint32_t                      prescaler,
                         uint8_t                       op_queue_size,
@@ -964,6 +993,8 @@ uint32_t app_timer_init(uint32_t                      prescaler,
     NVIC_EnableIRQ(SWI_IRQn);
 
     rtc1_init(prescaler);
+
+    overflow_init();                 /* Added overflow counter init procedure */
 
     m_ticks_latest = rtc1_counter_get();
 
@@ -1060,6 +1091,28 @@ uint32_t app_timer_cnt_get(void)
     return rtc1_counter_get();
 }
 
+void app_timer_ticks(uint32_t *p_overflow, uint32_t *p_ticks)
+{
+    uint32_t overflow0, overflow1, counter;
+
+    APP_TIMER_OVERFLOW_COUNTER->TASKS_CAPTURE[0] = 1; // trigger capture
+    overflow0 = APP_TIMER_OVERFLOW_COUNTER->CC[0]; // before
+    counter   = NRF_RTC1->COUNTER;
+    APP_TIMER_OVERFLOW_COUNTER->TASKS_CAPTURE[1] = 1; // trigger capture
+    overflow1 = APP_TIMER_OVERFLOW_COUNTER->CC[1]; // after
+
+    if (overflow0 != overflow1)
+    {
+        /* overflow occurred (rare)
+         * we don't know if overflow1 changed before or after
+         * we sampled counter1, so we just sample again
+         */
+        counter = NRF_RTC1->COUNTER;
+    }
+
+    *p_overflow = overflow1;
+    *p_ticks    = counter;
+}
 
 uint32_t app_timer_cnt_diff_compute(uint32_t   ticks_to,
                                     uint32_t   ticks_from,
