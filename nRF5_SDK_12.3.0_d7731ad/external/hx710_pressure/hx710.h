@@ -20,6 +20,7 @@
 #define TIMEOUT_MS 2000                     /* HX710 read timeout in ms */
 
 #include "nrf.h"
+#include "nrf_drv_spi.h"
 
 // volatile long hx710_buf = 0;
 // volatile long weight_gross = 0;
