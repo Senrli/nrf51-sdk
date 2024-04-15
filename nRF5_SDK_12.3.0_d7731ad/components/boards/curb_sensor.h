@@ -78,8 +78,8 @@ extern "C" {
 
 #define USART0_RX_PIN_NUMBER  21
 #define USART0_TX_PIN_NUMBER  22
-#define USART0_CTS_PIN_NUMBER NULL
-#define USART0_RTS_PIN_NUMBER NULL
+#define USART0_CTS_PIN_NUMBER 0     // not initialized
+#define USART0_RTS_PIN_NUMBER 0     // not initialized
 #define USART0_HWFC           APP_UART_FLOW_CONTROL_DISABLED
 
 // #define USART1_RX_PIN_NUMBER  5
