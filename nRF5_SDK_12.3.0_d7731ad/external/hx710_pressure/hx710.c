@@ -39,7 +39,6 @@ unsigned int get_weight(hx710_t* sensor);
 
 long hx710_read(hx710_t* sensor) {
     
-    uint32_t err_code;
     long count = 0;
 
     for (int i = 0; i < HX710_ACCU; i++) {

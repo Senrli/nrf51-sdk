@@ -78,8 +78,8 @@ extern "C" {
 
 #define USART0_RX_PIN_NUMBER  21
 #define USART0_TX_PIN_NUMBER  22
-#define USART0_CTS_PIN_NUMBER 23
-#define USART0_RTS_PIN_NUMBER 24
+#define USART0_CTS_PIN_NUMBER NULL
+#define USART0_RTS_PIN_NUMBER NULL
 #define USART0_HWFC           APP_UART_FLOW_CONTROL_DISABLED
 
 // #define USART1_RX_PIN_NUMBER  5
@@ -94,9 +94,9 @@ extern "C" {
 // #define SPI0_SCL               25
 // #define SPI0_SS                30
 
-// //I2C pin
-// #define I2C0_SCK               1
-// #define I2C0_SDA               0
+//I2C pin
+#define I2C0_SCK               23
+#define I2C0_SDA               24
 
 // Sensor output pins
 #define SENSOR_CLK_1            12
